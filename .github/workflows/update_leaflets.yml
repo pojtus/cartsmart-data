@@ -3,7 +3,10 @@ name: Update Leaflets Aggregator
 on:
   schedule:
     - cron: '0 6 * * 1'  # Spustí sa každý pondelok o 6:00 ráno UTC
-  workflow_dispatch:      # Umožňuje manuálne spustenie jedným klikom z webu
+  workflow_dispatch:      # Umožňuje manuálne spustenie jedným klikom
+
+permissions:
+  contents: write         # Toto dábotovi právo zapisovať a pushovať do repozitára
 
 jobs:
   build:
