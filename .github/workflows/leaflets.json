@@ -1,0 +1,46 @@
+[
+  {
+    "id": "leaflet_1",
+    "storeId": "lidl",
+    "storeName": "Lidl",
+    "title": "Tematický týždeň: Zahraničné špeciality",
+    "imageUrl": "https://example.com/image1.jpg",
+    "validUntil": "Streda 05.11.",
+    "products": [
+      {
+        "id": "p1",
+        "productName": "Slovenské mlieko 1.5%",
+        "price": 0.89,
+        "originalPrice": 1.15,
+        "package": "1L",
+        "discount": "-22%"
+      },
+      {
+        "id": "p2",
+        "productName": "Pilos Maslo 82%",
+        "price": 1.99,
+        "originalPrice": 2.49,
+        "package": "250g",
+        "discount": "-20%"
+      }
+    ]
+  },
+  {
+    "id": "leaflet_2",
+    "storeId": "kaufland",
+    "storeName": "Kaufland",
+    "title": "Super ceny pre každého",
+    "imageUrl": "https://example.com/image2.jpg",
+    "validUntil": "Piatok 07.11.",
+    "products": [
+      {
+        "id": "p3",
+        "productName": "Bravčové stehno bez kosti",
+        "price": 5.99,
+        "originalPrice": 7.49,
+        "package": "1kg",
+        "discount": "Akcia"
+      }
+    ]
+  }
+]
