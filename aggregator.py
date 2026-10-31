@@ -14,7 +14,7 @@ SOURCES = {
     },
     "tesco": {
         "type": "json_api",
-        "url": "https://www.tesco.sk/_next/data/U8AvdpcYs940gnlyz0fIm/akciove-ponuky/letaky-a-katalogy/hypermarkety/tesco-letak-2026-10-28/1.json?leafletType=hypermarkety&storeSlug=&leafletSlug=tesco-letak-2026-10-28&pageNumber=1 ",
+        "url": "https://www.tesco.sk/_next/data/U8AvdpcYs940gnlyz0fIm/akciove-ponuky/letaky-a-katalogy/hypermarkety/tesco-letak-2026-10-28/1.json?leafletType=hypermarkety&storeSlug=&leafletSlug=tesco-letak-2026-10-28&pageNumber=1",
     },
     "billa": {
         "type": "pdf",
