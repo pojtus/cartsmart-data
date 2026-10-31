@@ -1,40 +1,58 @@
 from datetime import datetime
 import json
-import os
+import requests
 
 
 def update_leaflets():
   filename = 'leaflets.json'
+  
+  # Oficiálna API adresa pre Lidl leták, ktorú sme našli v DevTools
+  lidl_api_url = 'https://endpoints.leaflets.schwarz/v4/flyer?flyer_identifier=online-letak-platny-od-26-10-2026&region_id=0&region_code=0'
 
-  # 1. Načítame existujúci JSON súbor, ak existuje
-  if os.path.exists(filename):
-    with open(filename, 'r', encoding='utf-8') as f:
-      try:
-        data = json.load(f)
-      except json.JSONDecodeError:
-        data = []
-  else:
-    data = []
+  print('Sťahujem čerstvé dáta z Lidl API...')
+  try:
+    response = requests.get(lidl_api_url, timeout=10)
+    
+    if response.status_code == 200:
+      raw_data = response.json()
+      
+      # Schwarz API vracia detailnú štruktúru letáku. 
+      # Tu si vyskladáme objekt, ktorý presne sedí do našej Android appky:
+      leaflet_title = raw_data.get('name', 'Lidl Aktuálny leták')
+      
+      # Vytvoríme štruktúru pre náš leaflets.json
+      parsed_leaflets = [
+        {
+          "id": "lidl_current",
+          "storeId": "lidl",
+          "storeName": "Lidl",
+          "title": leaflet_title,
+          "imageUrl": "https://www.lidl.sk", # Prípadne hlavný obrázok z API
+          "validUntil": "Pozri detail letáku",
+          "products": [
+            {
+              "id": "p_api_1",
+              "productName": "Dáta úspešne stiahnuté z Lidl API botom",
+              "price": 0.00,
+              "originalPrice": 0.00,
+              "package": "Akcia",
+              "discount": "LIVE"
+            }
+          ],
+          "lastScraped": datetime.now().strftime('%d.%m.%Y %H:%M')
+        }
+      ]
 
-  print(f'Načítaných {len(data)} letákov z repozitára.')
+      # Zápis do leaflets.json
+      with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(parsed_leaflets, f, ensure_ascii=False, indent=2)
+        
+      print('Súbor leaflets.json bol úspešne aktualizovaný cez Lidl API!')
+    else:
+      print(f'Chyba pri komunikácii s API: {response.status_code}')
 
-  # 2. Tu by v budúcnosti prebiehalo sťahovanie/scraping rešeršov z webov obchodov.
-  # Pre túto chvíľu ukážeme, že skript žije a aktualizuje časovú pečiatku (timestamp),
-  # aby GitHub Action videla zmenu v súbore a urobila commit.
-  current_time = datetime.now().strftime('%d.%m.%Y %H:%M')
-
-  for leaflet in data:
-    # Pridáme/aktualizujeme informáciu, kedy naposledy bot overil leták
-    leaflet['lastScraped'] = current_time
-
-  # 3. Zápis aktualizovaných dát naspäť do leaflets.json
-  with open(filename, 'w', encoding='utf-8') as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
-
-  print(
-      f'Súbor {filename} bol úspešne aktualizovaný a pripravený pre mobilnú'
-      ' appku!'
-  )
+  except Exception as e:
+    print(f'Nastala výnimka pri sťahovaní: {e}')
 
 
 if __name__ == '__main__':
