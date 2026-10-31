@@ -1,45 +1,35 @@
-name: Update Leaflets Daily
+name: Update Leaflets Aggregator
 
 on:
-  # 1. Časovač: Spustí sa automaticky každý deň o 3:00 ráno UTC
   schedule:
-    - cron: '0 3 * * *'
-  
-  # 2. Manuálne tlačidlo: Umožňuje ti spustiť to kedykoľvek ručne priamo z GitHubu
-  workflow_dispatch:
+    - cron: '0 6 * * 1'  # Spustí sa každý pondelok o 6:00 ráno UTC
+  workflow_dispatch:      # Umožňuje spustenie aj manuálne jedným klikom z webu
 
 jobs:
-  run-scraper:
+  build:
     runs-on: ubuntu-latest
-    
-    # Dôležité: Musíme povoliť zápis do repozitára, aby bot mohol uložiť nový JSON
-    permissions:
-      contents: write
 
     steps:
-      # Krok 1: Stiahne kód z tvojho repozitára do virtuálneho stroja
-      - name: Checkout repository
+      - name: Klonovanie repozitára
         uses: actions/checkout@v4
 
-      # Krok 2: Nainštaluje Python (prostredie, v ktorom napíšeme nášho bota/skript)
-      - name: Set up Python
+      - name: Nastavenie Pythonu
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # Krok 3: Nainštaluje knižnice, ktoré budeme potrebovať na sťahovanie webov (napr. requests, beautifulsoup4)
-      - name: Install dependencies
+      - name: Inštalácia závislostí
         run: |
-          pip install requests beautifulsoup4
+          python -m pip install --upgrade pip
+          pip install requests
 
-      # Krok 4: Spustí náš Python skript, ktorý vytiahne dáta a prepíše leaflets.json
-      - name: Run leaflet scraper
+      - name: Spustenie agregátora
+        run: python aggregator.py
+
+      - name: Automatický commit a push aktualizovaného JSONu
         run: |
-          python update_leaflets.py
-
-      # Krok 5: Automaticky uloží (commitne a pushne) zmenený leaflets.json späť do repozitára
-      - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "🤖 Automatická aktualizácia letákov z webov"
-          file_pattern: leaflets.json
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add leaflets.json
+          git commit -m "chore: automatická aktualizácia leaflets.json [skip ci]" || exit 0
+          git push
