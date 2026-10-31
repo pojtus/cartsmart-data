@@ -6,15 +6,15 @@ import requests
 SOURCES = {
     "lidl": {
         "type": "json_api",
-        "url": "https://www.lidl.sk/lv/flyer/v4/flyer",
+        "url": "https://endpoints.leaflets.schwarz/v4/flyer?flyer_identifier=online-letak-platny-od-26-10-2026&region_id=0&region_code=0",
     },
     "kaufland": {
         "type": "json_api",
-        "url": "https://www.kaufland.sk/api/v2/flyer",
+        "url": "https://endpoints.leaflets.schwarz/v4/flyer?flyer_identifier=SK_sk_KDZ_1020_SK44-LFT&region_id=1020&region_code=1020",
     },
     "tesco": {
         "type": "json_api",
-        "url": "https://lining.tesco.sk/1.json?leafletType=latest",
+        "url": "https://www.tesco.sk/_next/data/U8AvdpcYs940gnlyz0fIm/akciove-ponuky/letaky-a-katalogy/hypermarkety/tesco-letak-2026-10-28/1.json?leafletType=hypermarkety&storeSlug=&leafletSlug=tesco-letak-2026-10-28&pageNumber=1 ",
     },
     "billa": {
         "type": "pdf",
