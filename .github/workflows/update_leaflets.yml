@@ -1,0 +1,45 @@
+name: Update Leaflets Daily
+
+on:
+  # 1. Časovač: Spustí sa automaticky každý deň o 3:00 ráno UTC
+  schedule:
+    - cron: '0 3 * * *'
+  
+  # 2. Manuálne tlačidlo: Umožňuje ti spustiť to kedykoľvek ručne priamo z GitHubu
+  workflow_dispatch:
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    
+    # Dôležité: Musíme povoliť zápis do repozitára, aby bot mohol uložiť nový JSON
+    permissions:
+      contents: write
+
+    steps:
+      # Krok 1: Stiahne kód z tvojho repozitára do virtuálneho stroja
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Krok 2: Nainštaluje Python (prostredie, v ktorom napíšeme nášho bota/skript)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Krok 3: Nainštaluje knižnice, ktoré budeme potrebovať na sťahovanie webov (napr. requests, beautifulsoup4)
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      # Krok 4: Spustí náš Python skript, ktorý vytiahne dáta a prepíše leaflets.json
+      - name: Run leaflet scraper
+        run: |
+          python update_leaflets.py
+
+      # Krok 5: Automaticky uloží (commitne a pushne) zmenený leaflets.json späť do repozitára
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 Automatická aktualizácia letákov z webov"
+          file_pattern: leaflets.json
